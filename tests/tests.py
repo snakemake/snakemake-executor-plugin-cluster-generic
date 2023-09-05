@@ -18,6 +18,3 @@ class TestWorkflows(TestWorkflowsBase):
 
     def get_default_remote_prefix(self) -> Optional[str]:
         return None
-
-    def test_simple_workflow(self, tmp_path):
-        super().test_simple_workflow(tmp_path)

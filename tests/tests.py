@@ -6,6 +6,8 @@ from snakemake_interface_executor_plugins import ExecutorSettingsBase
 
 
 class TestWorkflows(TestWorkflowsBase):
+    __test__ = True
+    
     def get_executor(self) -> str:
         return "cluster-generic"
 

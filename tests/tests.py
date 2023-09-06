@@ -41,3 +41,10 @@ class TestWorkflowsStatusCmd(TestWorkflowsBase):
 
     def get_executor_settings(self) -> Optional[ExecutorSettingsBase]:
         return self._get_executor_settings(status_cmd=self._get_cmd("qstatus.sh"))
+
+
+class TestWorkflowsSidecar(TestWorkflowsBase):
+    __test__ = True
+
+    def get_executor_settings(self) -> Optional[ExecutorSettingsBase]:
+        return self._get_executor_settings(sidecar_cmd=self._get_cmd("sidecar.sh"))

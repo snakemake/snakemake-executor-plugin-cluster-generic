@@ -8,6 +8,7 @@ from typing import Optional
 import snakemake.common.tests
 from snakemake_executor_plugin_cluster_generic import ExecutorSettings
 from snakemake_interface_executor_plugins import ExecutorSettingsBase
+from snakemake_interface_common.exceptions import WorkflowError
 
 
 class TestWorkflowsBase(snakemake.common.tests.TestWorkflowsBase):
@@ -25,6 +26,27 @@ class TestWorkflowsBase(snakemake.common.tests.TestWorkflowsBase):
 
     def get_default_remote_prefix(self) -> Optional[str]:
         return None
+
+
+class TestWorkflowsNoSubmitCmd(TestWorkflowsBase):
+    __test__ = True
+    expect_exception = WorkflowError
+
+    def get_executor_settings(self) -> Optional[ExecutorSettingsBase]:
+        settings = self._get_executor_settings()
+        settings.submit_cmd = None
+        return settings
+
+
+class TestWorkflowsNoStatusCmdNoSharedFs(TestWorkflowsBase):
+    __test__ = True
+    expect_exception = WorkflowError
+
+    def get_executor_settings(self) -> Optional[ExecutorSettingsBase]:
+        return self._get_executor_settings(status_cmd=self._get_cmd("qstatus.sh"))
+    
+    def get_assume_shared_fs(self) -> bool:
+        return False
 
 
 class TestWorkflowsSubmitCmdOnly(TestWorkflowsBase):

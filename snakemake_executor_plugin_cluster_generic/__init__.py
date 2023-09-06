@@ -2,7 +2,7 @@ from dataclasses import dataclass, field
 import os
 import shlex
 import subprocess
-from typing import List, Set
+from typing import Generator, List, Optional, Set
 
 from snakemake_interface_common.exceptions import WorkflowError
 from snakemake_interface_executor_plugins.executors.base import SubmittedJobInfo
@@ -21,19 +21,21 @@ from snakemake_interface_executor_plugins.jobs import (
 # Omit this class if you don't need any.
 @dataclass
 class ExecutorSettings(ExecutorSettingsBase):
-    submit_cmd: str = field(metadata={"help": "Command for submitting jobs"})
-    status_cmd: str = field(metadata={"help": "Command for retrieving job status"})
-    cancel_cmd: str = field(
+    submit_cmd: Optional[str] = field(default=None, metadata={"help": "Command for submitting jobs"})
+    status_cmd: Optional[str] = field(default=None, metadata={"help": "Command for retrieving job status"})
+    cancel_cmd: Optional[str] = field(
+        default=None,
         metadata={
             "help": "Command for cancelling jobs. Expected to take one or more jobids as arguments."
         }
     )
     cancel_nargs: int = field(
+        default=20,
         metadata={
             "help": "Number of jobids to pass to cancel_cmd. If more are given, cancel_cmd will be called multiple times."
         }
     )
-    sidecarcmd: str = field(metadata={"help": "Command for sidecar process."})
+    sidecar_cmd: Optional[str] = field(default=None, metadata={"help": "Command for sidecar process."})
 
 
 # Required:
@@ -65,13 +67,18 @@ class Executor(RemoteExecutor):
             pass_envvar_declarations_to_cmd=True,  # whether environment variables shall be passed to jobs
         )
 
+        if self.workflow.executor_settings.submit_cmd is None:
+            raise WorkflowError(
+                "You have to specify a submit command via --cluster-generic-submit-cmd."
+            )
+
         self.sidecar_vars = None
         if self.workflow.executor_settings.sidecar_cmd:
             self._launch_sidecar()
 
         if (
             not self.workflow.executor_settings.status_cmd
-            and not self.workflow.assume_shared_fs
+            and not self.workflow.storage_settings.assume_shared_fs
         ):
             raise WorkflowError(
                 "If no shared filesystem is used, you have to "
@@ -79,12 +86,7 @@ class Executor(RemoteExecutor):
             )
 
         self.status_cmd_kills = []
-
-    def get_job_exec_prefix(self, job: ExecutorJobInterface):
-        if self.assume_shared_fs:
-            return f"cd {shlex.quote(self.workflow.workdir_init)}"
-        else:
-            return ""
+        self.external_jobid = dict()
 
     def run_job(self, job: ExecutorJobInterface):
         # Implement here how to run a job.
@@ -118,6 +120,7 @@ class Executor(RemoteExecutor):
                         job.jobid, ext_jobid
                     )
                 )
+                self.external_jobid.update((f, ext_jobid) for f in job.output)
                 self.report_job_submission(
                     SubmittedJobInfo(job, external_jobid=ext_jobid)
                 )
@@ -127,7 +130,7 @@ class Executor(RemoteExecutor):
             self.external_jobid[f] for f in job.input if f in self.external_jobid
         )
         try:
-            submitcmd = job.format_wildcards(self.submitcmd, dependencies=deps)
+            submitcmd = job.format_wildcards(self.workflow.executor_settings.submit_cmd, dependencies=deps)
         except AttributeError as e:
             raise WorkflowError(str(e), rule=job.rule if not job.is_group() else None)
 
@@ -161,7 +164,10 @@ class Executor(RemoteExecutor):
             return
 
         if ext_jobid and ext_jobid[0]:
-            job_info.external_jobid = ext_jobid[0]
+            ext_jobid = ext_jobid[0].strip()
+            job_info.external_jobid = ext_jobid
+
+            self.external_jobid.update((f, ext_jobid) for f in job.output)
 
             self.logger.info(
                 "Submitted {} {} with external jobid '{}'.".format(
@@ -171,13 +177,7 @@ class Executor(RemoteExecutor):
 
         self.report_job_submission(job_info)
 
-    def check_active_jobs(self, active_jobs: Set[SubmittedJobInfo]):
-        # Check the status of active jobs.
-
-        # Jobs that are finished or error out have to be removed from the given list.
-        # For jobs that have finished successfully, you have to call self.report_job_success(job).
-        # For jobs that have errored, you have to call self.report_job_error(job).
-
+    async def check_active_jobs(self, active_jobs: List[SubmittedJobInfo]) -> Generator[SubmittedJobInfo, None, None]:
         success = "success"
         failed = "failed"
         running = "running"
@@ -250,13 +250,12 @@ class Executor(RemoteExecutor):
                     return failed
                 return running
 
-        for active_job in list(active_jobs):
-            with self.status_rate_limiter:
+        for active_job in active_jobs:
+            async with self.status_rate_limiter:
                 status = job_status(active_job)
 
                 if status == success:
                     self.report_job_success(active_job.job)
-                    active_jobs.remove(active_job)
                 elif status == failed:
                     self.print_job_error(
                         active_job.job,
@@ -268,7 +267,9 @@ class Executor(RemoteExecutor):
                         active_job, self.dag.jobid(active_job.job)
                     )
                     self.report_job_error(active_job.job)
-                    active_jobs.remove(active_job)
+                else:
+                    # still active, yield again
+                    yield active_job
 
     def cancel_jobs(self, active_jobs: List[SubmittedJobInfo]):
         def _chunks(lst, n):
@@ -309,3 +310,28 @@ class Executor(RemoteExecutor):
                 "No --cluster-cancel given. Will exit after finishing currently running jobs."
             )
             self.shutdown()
+
+    def get_job_exec_prefix(self, job: ExecutorJobInterface):
+        if self.workflow.storage_settings.assume_shared_fs:
+            return f"cd {shlex.quote(self.workflow.workdir_init)}"
+        else:
+            return ""
+
+    def get_job_exec_suffix(self, job: ExecutorJobInterface):
+        if self.workflow.executor_settings.status_cmd:
+            return "exit 0 || exit 1"
+        elif self.workflow.storage_settings.assume_shared_fs:
+            # TODO wrap with watch and touch {jobrunning}
+            # check modification date of {jobrunning} in the wait_for_job method
+
+            return (
+                f"touch {repr(self.get_jobfinished_marker(job))} || "
+                f"(touch {repr(self.get_jobfailed_marker(job))}; exit 1)"
+            )
+        assert False, "bug: neither statuscmd defined nor shared FS"
+
+    def get_jobfinished_marker(self, job: ExecutorJobInterface):
+        return os.path.join(self.tmpdir, f"{job.jobid}.jobfinished")
+
+    def get_jobfailed_marker(self, job: ExecutorJobInterface):
+        return os.path.join(self.tmpdir, f"{job.jobid}.jobfailed")

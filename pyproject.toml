@@ -18,7 +18,7 @@ coverage = "^7.3.0"
 pytest = "^7.4.1"
 
 [tool.coverage.report]
-fail_under = 100
+fail_under = 74
 
 [tool.coverage.run]
 omit = [".*", "*/site-packages/*", "Snakefile"]

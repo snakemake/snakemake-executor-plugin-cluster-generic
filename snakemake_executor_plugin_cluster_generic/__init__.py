@@ -1,3 +1,8 @@
+__author__ = "Johannes Köster, Manuel Holtgrewe"
+__copyright__ = "Copyright 2023, Johannes Köster, Manuel Holtgrewe"
+__email__ = "johannes.koester@uni-due.de"
+__license__ = "MIT"
+
 from dataclasses import dataclass, field
 import os
 import shlex

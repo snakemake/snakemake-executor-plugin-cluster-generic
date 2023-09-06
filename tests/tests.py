@@ -1,3 +1,8 @@
+__author__ = "Johannes Köster, Manuel Holtgrewe"
+__copyright__ = "Copyright 2023, Johannes Köster, Manuel Holtgrewe"
+__email__ = "johannes.koester@uni-due.de"
+__license__ = "MIT"
+
 from pathlib import Path
 from typing import Optional
 import snakemake.common.tests

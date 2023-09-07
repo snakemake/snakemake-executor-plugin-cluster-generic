@@ -275,12 +275,9 @@ class Executor(RemoteExecutor):
                 elif status == failed:
                     self.print_job_error(
                         active_job.job,
-                        cluster_jobid=active_job.jobid
-                        if active_job.jobid
-                        else "unknown",
                     )
                     self.print_cluster_job_error(
-                        active_job, self.dag.jobid(active_job.job)
+                        active_job,
                     )
                     self.report_job_error(active_job.job)
                 else:
@@ -297,7 +294,7 @@ class Executor(RemoteExecutor):
             # Enumerate job IDs and create chunks.
             # If cancelnargs evaluates to false (0/None)
             # then pass all job ids at once
-            jobids = [job_info.aux["external_jobid"] for job_info in active_jobs]
+            jobids = [job_info.external_jobid for job_info in active_jobs]
             chunks = list(_chunks(jobids, self.cancelnargs or len(jobids)))
             # Go through the chunks and cancel the jobs, warn in case of failures.
             failures = 0

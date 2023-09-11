@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.0.1](https://github.com/snakemake/snakemake-executor-plugin-cluster-generic/compare/v1.0.0...v1.0.1) (2023-09-11)
+
+
+### Bug Fixes
+
+* adapt to API change in snakemake-interface-executor-plugins ([c56d011](https://github.com/snakemake/snakemake-executor-plugin-cluster-generic/commit/c56d011a86837637b1b1cf8eaf74fe9d9378f622))
+* API usage ([14375f6](https://github.com/snakemake/snakemake-executor-plugin-cluster-generic/commit/14375f6a032a59f0509f48089f327845c840fa38))
+* mark submit_cmd as required ([cf13733](https://github.com/snakemake/snakemake-executor-plugin-cluster-generic/commit/cf13733ae16682e5995a28e19cd51afd2cc1c4ef))
+
 ## 1.0.0 (2023-09-06)
 
 

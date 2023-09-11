@@ -30,7 +30,11 @@ from snakemake_interface_executor_plugins.jobs import (
 @dataclass
 class ExecutorSettings(ExecutorSettingsBase):
     submit_cmd: Optional[str] = field(
-        default=None, metadata={"help": "Command for submitting jobs"}
+        default=None,
+        metadata={
+            "help": "Command for submitting jobs",
+            "required": True,
+        },
     )
     status_cmd: Optional[str] = field(
         default=None, metadata={"help": "Command for retrieving job status"}

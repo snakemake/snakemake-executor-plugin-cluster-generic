@@ -170,12 +170,10 @@ class Executor(RemoteExecutor):
                 .split("\n")
             )
         except subprocess.CalledProcessError as ex:
-            self.logger.error(
-                "Error submitting jobscript (exit code {}):\n{}".format(
-                    ex.returncode, ex.output.decode()
-                )
+            msg = "Error submitting jobscript (exit code {}):\n{}".format(
+                ex.returncode, ex.output.decode()
             )
-            self.report_job_error(job)
+            self.report_job_error(job_info, msg=msg)
             return
 
         if ext_jobid and ext_jobid[0]:

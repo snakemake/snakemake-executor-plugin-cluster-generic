@@ -43,7 +43,7 @@ class TestWorkflowsNoStatusCmdNoSharedFs(TestWorkflowsBase):
     expect_exception = WorkflowError
 
     def get_executor_settings(self) -> Optional[ExecutorSettingsBase]:
-        return self._get_executor_settings(status_cmd=self._get_cmd("qstatus.sh"))
+        return self._get_executor_settings()
 
     def get_assume_shared_fs(self) -> bool:
         return False

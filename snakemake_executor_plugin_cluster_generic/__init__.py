@@ -271,12 +271,9 @@ class Executor(RemoteExecutor):
                 status = job_status(active_job)
 
                 if status == success:
-                    self.report_job_success(active_job.job)
+                    self.report_job_success(active_job)
                 elif status == failed:
-                    self.print_job_error(
-                        active_job,
-                    )
-                    self.report_job_error(active_job.job)
+                    self.report_job_error(active_job)
                 else:
                     # still active, yield again
                     yield active_job

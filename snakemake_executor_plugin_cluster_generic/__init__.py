@@ -19,7 +19,7 @@ from snakemake_interface_executor_plugins import ExecutorSettingsBase, CommonSet
 from snakemake_interface_executor_plugins.workflow import WorkflowExecutorInterface
 from snakemake_interface_executor_plugins.logging import LoggerExecutorInterface
 from snakemake_interface_executor_plugins.jobs import (
-    ExecutorJobInterface,
+    JobExecutorInterface,
 )
 
 
@@ -107,7 +107,7 @@ class Executor(RemoteExecutor):
         self.status_cmd_kills = []
         self.external_jobid = dict()
 
-    def run_job(self, job: ExecutorJobInterface):
+    def run_job(self, job: JobExecutorInterface):
         jobscript = self.get_jobscript(job)
         self.write_jobscript(job, jobscript)
 
@@ -324,13 +324,13 @@ class Executor(RemoteExecutor):
             )
             self.shutdown()
 
-    def get_job_exec_prefix(self, job: ExecutorJobInterface):
+    def get_job_exec_prefix(self, job: JobExecutorInterface):
         if self.workflow.storage_settings.assume_shared_fs:
             return f"cd {shlex.quote(self.workflow.workdir_init)}"
         else:
             return ""
 
-    def get_job_exec_suffix(self, job: ExecutorJobInterface):
+    def get_job_exec_suffix(self, job: JobExecutorInterface):
         if self.workflow.executor_settings.status_cmd:
             return "exit 0 || exit 1"
         elif self.workflow.storage_settings.assume_shared_fs:
@@ -343,10 +343,10 @@ class Executor(RemoteExecutor):
             )
         assert False, "bug: neither statuscmd defined nor shared FS"
 
-    def get_jobfinished_marker(self, job: ExecutorJobInterface):
+    def get_jobfinished_marker(self, job: JobExecutorInterface):
         return os.path.join(self.tmpdir, f"{job.jobid}.jobfinished")
 
-    def get_jobfailed_marker(self, job: ExecutorJobInterface):
+    def get_jobfailed_marker(self, job: JobExecutorInterface):
         return os.path.join(self.tmpdir, f"{job.jobid}.jobfailed")
 
     def _launch_sidecar(self):

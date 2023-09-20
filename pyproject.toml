@@ -11,7 +11,7 @@ snakemake-interface-executor-plugins = "^4.0.0"
 snakemake-interface-common = "^1.3.2"
 
 [tool.poetry.group.dev.dependencies]
-snakemake = {git = "https://github.com/snakemake/snakemake.git", branch = "refactor/cleanup-interfaces"}
+snakemake = {git = "https://github.com/snakemake/snakemake.git"}
 black = "^23.7.0"
 flake8 = "^6.1.0"
 coverage = "^7.3.0"

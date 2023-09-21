@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.3](https://github.com/snakemake/snakemake-executor-plugin-cluster-generic/compare/v1.0.2...v1.0.3) (2023-09-21)
+
+
+### Bug Fixes
+
+* adapt to breaking changes in snakemake-interface-executor-plugins ([ffd6418](https://github.com/snakemake/snakemake-executor-plugin-cluster-generic/commit/ffd641814720e1a03d07f9a2c359959bde2714bd))
+
 ## [1.0.2](https://github.com/snakemake/snakemake-executor-plugin-cluster-generic/compare/v1.0.1...v1.0.2) (2023-09-20)
 
 

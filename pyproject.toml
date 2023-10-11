@@ -12,6 +12,7 @@ snakemake-interface-common = "^1.7.0"
 
 [tool.poetry.group.dev.dependencies]
 snakemake = {git = "https://github.com/snakemake/snakemake.git", branch = "main"}
+snakemake-interface-storage-plugins = "^1.1.1" # TODO remove once snakemake depends on it
 black = "^23.7.0"
 flake8 = "^6.1.0"
 coverage = "^7.3.0"

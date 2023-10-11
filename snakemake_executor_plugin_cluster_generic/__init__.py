@@ -81,7 +81,7 @@ class Executor(RemoteExecutor):
             workflow,
             logger,
             # configure behavior of RemoteExecutor below
-            # whether arguments for setting the storage provider shall  be passed to jobs
+            # whether arguments for setting the storage provider shall be passed to jobs
             pass_default_storage_provider_args=True,
             # whether arguments for setting default resources shall be passed to jobs
             pass_default_resources_args=True,

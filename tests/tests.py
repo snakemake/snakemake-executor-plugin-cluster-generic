@@ -21,10 +21,10 @@ class TestWorkflowsBase(snakemake.common.tests.TestWorkflowsBase):
     def _get_executor_settings(self, **kwargs) -> Optional[ExecutorSettingsBase]:
         return ExecutorSettings(submit_cmd=self._get_cmd("qsub.sh"), **kwargs)
 
-    def get_default_remote_provider(self) -> Optional[str]:
+    def get_default_storage_provider(self) -> Optional[str]:
         return None
 
-    def get_default_remote_prefix(self) -> Optional[str]:
+    def get_default_storage_prefix(self) -> Optional[str]:
         return None
 
 

@@ -9,7 +9,6 @@ import snakemake.common.tests
 
 from snakemake_executor_plugin_cluster_generic import ExecutorSettings
 from snakemake_interface_executor_plugins.settings import ExecutorSettingsBase
-from snakemake_interface_storage_plugins.settings import StorageProviderSettingsBase
 from snakemake_interface_common.exceptions import WorkflowError
 
 

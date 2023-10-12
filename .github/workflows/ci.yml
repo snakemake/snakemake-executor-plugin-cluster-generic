@@ -13,6 +13,11 @@ jobs:
       - name: Check out the code
         uses: actions/checkout@v3
 
+      - uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+          cache: poetry
+      
       - name: Install poetry
         run: pipx install poetry
 
@@ -36,6 +41,11 @@ jobs:
       - name: Check out the code
         uses: actions/checkout@v3
 
+      - uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+          cache: poetry
+
       - name: Install poetry
         run: pipx install poetry
 
@@ -57,6 +67,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+
+      - uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+          cache: poetry
 
       - name: Install poetry
         run: pipx install poetry

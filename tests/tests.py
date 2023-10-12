@@ -13,7 +13,7 @@ from snakemake_interface_storage_plugins.settings import StorageProviderSettings
 from snakemake_interface_common.exceptions import WorkflowError
 
 
-class TestWorkflowsBase(snakemake.common.tests.TestWorkflowsBase):
+class TestWorkflowsBase(snakemake.common.tests.TestWorkflowsLocalStorageBase):
     def get_executor(self) -> str:
         return "cluster-generic"
 
@@ -22,17 +22,6 @@ class TestWorkflowsBase(snakemake.common.tests.TestWorkflowsBase):
 
     def _get_executor_settings(self, **kwargs) -> Optional[ExecutorSettingsBase]:
         return ExecutorSettings(submit_cmd=self._get_cmd("qsub.sh"), **kwargs)
-
-    def get_default_storage_provider(self) -> Optional[str]:
-        return None
-
-    def get_default_storage_prefix(self) -> Optional[str]:
-        return None
-
-    def get_default_storage_provider_settings(
-        self,
-    ) -> Optional[StorageProviderSettingsBase]:
-        return None
 
 
 class TestWorkflowsNoSubmitCmd(TestWorkflowsBase):

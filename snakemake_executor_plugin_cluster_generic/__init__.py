@@ -19,8 +19,6 @@ from snakemake_interface_executor_plugins.settings import (
     ExecutorSettingsBase,
     CommonSettings,
 )
-from snakemake_interface_executor_plugins.workflow import WorkflowExecutorInterface
-from snakemake_interface_executor_plugins.logging import LoggerExecutorInterface
 from snakemake_interface_executor_plugins.jobs import (
     JobExecutorInterface,
 )

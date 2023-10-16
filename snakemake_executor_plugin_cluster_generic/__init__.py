@@ -66,29 +66,17 @@ class ExecutorSettings(ExecutorSettingsBase):
 common_settings = CommonSettings(
     non_local_exec=True,
     implies_no_shared_fs=False,
+    pass_default_storage_provider_args=True,
+    pass_default_resources_args=True,
+    pass_envvar_declarations_to_cmd=True,
+    auto_deploy_default_storage_provider=False,
 )
 
 
 # Required:
 # Implementation of your executor
 class Executor(RemoteExecutor):
-    def __init__(
-        self,
-        workflow: WorkflowExecutorInterface,
-        logger: LoggerExecutorInterface,
-    ):
-        super().__init__(
-            workflow,
-            logger,
-            # configure behavior of RemoteExecutor below
-            # whether arguments for setting the storage provider shall be passed to jobs
-            pass_default_storage_provider_args=True,
-            # whether arguments for setting default resources shall be passed to jobs
-            pass_default_resources_args=True,
-            # whether environment variables shall be passed to jobs
-            pass_envvar_declarations_to_cmd=True,
-        )
-
+    def __post_init__(self):
         if self.workflow.executor_settings.submit_cmd is None:
             raise WorkflowError(
                 "You have to specify a submit command via --cluster-generic-submit-cmd."

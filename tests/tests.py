@@ -9,7 +9,7 @@ import snakemake.common.tests
 
 from snakemake_executor_plugin_cluster_generic import ExecutorSettings
 from snakemake_interface_executor_plugins.settings import ExecutorSettingsBase
-from snakemake_interface_common.exceptions import WorkflowError
+from snakemake_interface_common.exceptions import WorkflowError, ApiError
 
 
 class TestWorkflowsBase(snakemake.common.tests.TestWorkflowsLocalStorageBase):
@@ -35,7 +35,7 @@ class TestWorkflowsNoSubmitCmd(TestWorkflowsBase):
 
 class TestWorkflowsNoStatusCmdNoSharedFs(TestWorkflowsBase):
     __test__ = True
-    expect_exception = WorkflowError
+    expect_exception = ApiError
 
     def get_executor_settings(self) -> Optional[ExecutorSettingsBase]:
         return self._get_executor_settings()

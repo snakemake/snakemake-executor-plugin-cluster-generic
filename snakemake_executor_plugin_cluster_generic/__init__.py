@@ -18,7 +18,6 @@ from snakemake_interface_executor_plugins.executors.remote import RemoteExecutor
 from snakemake_interface_executor_plugins.settings import (
     ExecutorSettingsBase,
     CommonSettings,
-    SharedFSUsage,
 )
 from snakemake_interface_executor_plugins.jobs import (
     JobExecutorInterface,

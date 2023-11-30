@@ -18,6 +18,7 @@ from snakemake_interface_executor_plugins.executors.remote import RemoteExecutor
 from snakemake_interface_executor_plugins.settings import (
     ExecutorSettingsBase,
     CommonSettings,
+    SharedFSUsage,
 )
 from snakemake_interface_executor_plugins.jobs import (
     JobExecutorInterface,
@@ -87,7 +88,7 @@ class Executor(RemoteExecutor):
 
         if (
             not self.workflow.executor_settings.status_cmd
-            and not self.workflow.storage_settings.assume_shared_fs
+            and not self.workflow.storage_settings.assume_common_workdir
         ):
             raise WorkflowError(
                 "If no shared filesystem is used, you have to "
@@ -315,7 +316,7 @@ class Executor(RemoteExecutor):
             self.shutdown()
 
     def get_job_exec_prefix(self, job: JobExecutorInterface):
-        if self.workflow.storage_settings.assume_shared_fs:
+        if self.workflow.storage_settings.assume_common_workdir:
             return f"cd {shlex.quote(self.workflow.workdir_init)}"
         else:
             return ""
@@ -323,7 +324,7 @@ class Executor(RemoteExecutor):
     def get_job_exec_suffix(self, job: JobExecutorInterface):
         if self.workflow.executor_settings.status_cmd:
             return "exit 0 || exit 1"
-        elif self.workflow.storage_settings.assume_shared_fs:
+        else:
             # TODO wrap with watch and touch {jobrunning}
             # check modification date of {jobrunning} in the wait_for_job method
 
@@ -331,7 +332,6 @@ class Executor(RemoteExecutor):
                 f"touch {repr(self.get_jobfinished_marker(job))} || "
                 f"(touch {repr(self.get_jobfailed_marker(job))}; exit 1)"
             )
-        assert False, "bug: neither statuscmd defined nor shared FS"
 
     def get_jobfinished_marker(self, job: JobExecutorInterface):
         return os.path.join(self.tmpdir, f"{job.jobid}.jobfinished")

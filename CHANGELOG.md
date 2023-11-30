@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.0.5](https://github.com/snakemake/snakemake-executor-plugin-cluster-generic/compare/v1.0.4...v1.0.5) (2023-11-30)
+
+
+### Bug Fixes
+
+* adapt to changes in interface ([cfda732](https://github.com/snakemake/snakemake-executor-plugin-cluster-generic/commit/cfda732b58714e6a077097cb059c31241a6f4839))
+* adapt to interface changes ([eace99a](https://github.com/snakemake/snakemake-executor-plugin-cluster-generic/commit/eace99a86386395040bc2bca7bfe713df7573625))
+
 ## [1.0.4](https://github.com/snakemake/snakemake-executor-plugin-cluster-generic/compare/v1.0.3...v1.0.4) (2023-11-20)
 
 

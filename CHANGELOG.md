@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.6](https://github.com/snakemake/snakemake-executor-plugin-cluster-generic/compare/v1.0.5...v1.0.6) (2023-12-08)
+
+
+### Documentation
+
+* update metadata ([d3435f8](https://github.com/snakemake/snakemake-executor-plugin-cluster-generic/commit/d3435f82cfa78c492f7308cd8b6c156076c41643))
+
 ## [1.0.5](https://github.com/snakemake/snakemake-executor-plugin-cluster-generic/compare/v1.0.4...v1.0.5) (2023-11-30)
 
 

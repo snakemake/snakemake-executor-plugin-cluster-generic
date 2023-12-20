@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.7](https://github.com/snakemake/snakemake-executor-plugin-cluster-generic/compare/v1.0.6...v1.0.7) (2023-12-20)
+
+
+### Bug Fixes
+
+* add license file ([aadd97d](https://github.com/snakemake/snakemake-executor-plugin-cluster-generic/commit/aadd97dcd9b6dba4bc84ee0aaf81a7b25bbb8729))
+
 ## [1.0.6](https://github.com/snakemake/snakemake-executor-plugin-cluster-generic/compare/v1.0.5...v1.0.6) (2023-12-08)
 
 

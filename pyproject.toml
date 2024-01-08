@@ -17,7 +17,7 @@ snakemake-interface-common = "^1.13.0"
 [tool.poetry.group.dev.dependencies]
 snakemake = {git = "https://github.com/snakemake/snakemake.git", branch = "main"}
 black = "^23.7.0"
-flake8 = "^6.1.0"
+flake8 = ">=6.1,<8.0"
 coverage = "^7.3.0"
 pytest = "^7.4.1"
 

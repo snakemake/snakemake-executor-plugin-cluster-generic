@@ -222,7 +222,8 @@ class Executor(RemoteExecutor):
                                 "(if this happens unexpectedly during your "
                                 "workflow execution, "
                                 "have a closer look.).".format(
-                                    self.statuscmd, ",".join(self.status_cmd_kills)
+                                    self.workflow.executor_settings.submit_cmd,
+                                    ",".join(self.status_cmd_kills),
                                 )
                             )
                             self.status_cmd_kills.clear()
@@ -237,7 +238,9 @@ class Executor(RemoteExecutor):
                     raise WorkflowError(
                         "Cluster status command {} returned {} but just a single "
                         "line with one of {} is expected.".format(
-                            self.statuscmd, "\\n".join(ret), ",".join(valid_returns)
+                            self.workflow.executor_settings.submit_cmd,
+                            "\\n".join(ret),
+                            ",".join(valid_returns),
                         )
                     )
                 return ret[0]

@@ -284,7 +284,11 @@ class Executor(RemoteExecutor):
             # If cancelnargs evaluates to false (0/None)
             # then pass all job ids at once
             jobids = [job_info.external_jobid for job_info in active_jobs]
-            chunks = list(_chunks(jobids, self.workflow.executor_settings.cancel_nargs or len(jobids)))
+            chunks = list(
+                _chunks(
+                    jobids, self.workflow.executor_settings.cancel_nargs or len(jobids)
+                )
+            )
             # Go through the chunks and cancel the jobs, warn in case of failures.
             failures = 0
             for chunk in chunks:

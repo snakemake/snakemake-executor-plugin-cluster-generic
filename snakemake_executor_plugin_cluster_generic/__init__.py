@@ -222,7 +222,8 @@ class Executor(RemoteExecutor):
                                 "(if this happens unexpectedly during your "
                                 "workflow execution, "
                                 "have a closer look.).".format(
-                                    self.statuscmd, ",".join(self.status_cmd_kills)
+                                    self.workflow.executor_settings.status_cmd,
+                                    ",".join(self.status_cmd_kills),
                                 )
                             )
                             self.status_cmd_kills.clear()
@@ -237,7 +238,9 @@ class Executor(RemoteExecutor):
                     raise WorkflowError(
                         "Cluster status command {} returned {} but just a single "
                         "line with one of {} is expected.".format(
-                            self.statuscmd, "\\n".join(ret), ",".join(valid_returns)
+                            self.workflow.executor_settings.status_cmd,
+                            "\\n".join(ret),
+                            ",".join(valid_returns),
                         )
                     )
                 return ret[0]
@@ -276,12 +279,16 @@ class Executor(RemoteExecutor):
             for i in range(0, len(lst), n):
                 yield lst[i : i + n]
 
-        if self.cancelcmd:  # We have --cluster-cancel
+        if self.workflow.executor_settings.cancel_cmd:  # We have --cluster-cancel
             # Enumerate job IDs and create chunks.
             # If cancelnargs evaluates to false (0/None)
             # then pass all job ids at once
             jobids = [job_info.external_jobid for job_info in active_jobs]
-            chunks = list(_chunks(jobids, self.cancelnargs or len(jobids)))
+            chunks = list(
+                _chunks(
+                    jobids, self.workflow.executor_settings.cancel_nargs or len(jobids)
+                )
+            )
             # Go through the chunks and cancel the jobs, warn in case of failures.
             failures = 0
             for chunk in chunks:
@@ -292,7 +299,7 @@ class Executor(RemoteExecutor):
                     if self.sidecar_vars:
                         env["SNAKEMAKE_CLUSTER_SIDECAR_VARS"] = self.sidecar_vars
                     subprocess.check_call(
-                        [self.cancelcmd] + chunk,
+                        [self.workflow.executor_settings.cancel_cmd] + chunk,
                         shell=False,
                         timeout=cancel_timeout,
                         env=env,

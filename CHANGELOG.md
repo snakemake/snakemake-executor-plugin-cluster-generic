@@ -5,7 +5,7 @@
 
 ### Bug Fixes
 
-* Update __init__.py ([#11](https://github.com/snakemake/snakemake-executor-plugin-cluster-generic/issues/11)) ([0827378](https://github.com/snakemake/snakemake-executor-plugin-cluster-generic/commit/08273784b2c100fbeef9881621df36ac69ceb7ed))
+* Fix attribute errors in relation to status cmd and cancel cmd ([#11](https://github.com/snakemake/snakemake-executor-plugin-cluster-generic/issues/11)) ([0827378](https://github.com/snakemake/snakemake-executor-plugin-cluster-generic/commit/08273784b2c100fbeef9881621df36ac69ceb7ed))
 
 ## [1.0.7](https://github.com/snakemake/snakemake-executor-plugin-cluster-generic/compare/v1.0.6...v1.0.7) (2023-12-20)
 

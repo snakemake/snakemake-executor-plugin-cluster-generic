@@ -299,7 +299,7 @@ class Executor(RemoteExecutor):
                     if self.sidecar_vars:
                         env["SNAKEMAKE_CLUSTER_SIDECAR_VARS"] = self.sidecar_vars
                     subprocess.check_call(
-                        [self.workflow.executor_settings.cancel_cmd] + chunk,
+                        self.workflow.executor_settings.cancel_cmd.split(" ") + chunk,
                         shell=False,
                         timeout=cancel_timeout,
                         env=env,

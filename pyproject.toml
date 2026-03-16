@@ -1,32 +1,50 @@
-[tool.poetry]
+[project]
 name = "snakemake-executor-plugin-cluster-generic"
 version = "1.0.9"
 description = ""
-authors = ["Johannes Koester <johannes.koester@uni-due.de>"]
+authors = [{ name = "Johannes Koester", email = "johannes.koester@uni-due.de" }]
 readme = "README.md"
 license = "MIT"
-repository = "https://github.com/snakemake/snakemake-executor-plugin-cluster-generic"
-documentation = "https://snakemake.github.io/snakemake-plugin-catalog/plugins/executor/cluster-generic.html"
 keywords = ["snakemake", "plugin", "executor", "cluster"]
-
-[tool.poetry.dependencies]
-python = "^3.11"
-snakemake-interface-executor-plugins = "^9.0.0"
-snakemake-interface-common = "^1.13.0"
-
-[tool.poetry.group.dev.dependencies]
-snakemake = "^8.20.1"
-black = "^23.7.0"
-flake8 = ">=6.1,<8.0"
-coverage = "^7.3.0"
-pytest = ">=7.4.1,<9.0.0"
-
-[tool.coverage.report]
-fail_under = 74
-
-[tool.coverage.run]
-omit = [".*", "*/site-packages/*", "Snakefile"]
+dependencies = [
+    "snakemake-interface-common>=1.13.0,<2",
+    "snakemake-interface-executor-plugins>=9.0.0,<10",
+]
+requires-python = ">=3.11,<4.0"
 
 [build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+build-backend = "hatchling.build"
+requires = ["hatchling"]
+
+[dependency-groups]
+dev = ["ruff", "pytest", "pytest-cov", "pyrefly", "twine", "build", "snakemake"]
+
+[project.urls]
+Repository = "https://github.com/snakemake/snakemake-executor-plugin-cluster-generic"
+Documentation = "https://snakemake.github.io/snakemake-plugin-catalog/plugins/executor/cluster-generic.html"
+
+[tool.pixi.workspace]
+channels = ["conda-forge"]
+platforms = ["linux-64"]
+
+[tool.pixi.tasks]
+
+[tool.coverage.report]
+exclude_lines = ["pass", "\\.\\.\\."]
+fail_under = 68.9
+
+[tool.pixi.pypi-dependencies.snakemake_executor_plugin_cluster_generic]
+path = "."
+editable = true
+
+[tool.pixi.environments.dev]
+features = ["dev"]
+
+[tool.pixi.feature.dev.tasks]
+lint = "ruff check src tests"
+format = "ruff format src tests"
+typecheck = "pyrefly check src tests"
+coverage-report = "coverage report -m"
+test = "pytest --cov=snakemake_executor_plugin_cluster_generic --cov-report=xml:coverage-report/coverage.xml --cov-report=term-missing tests/test_plugin.py"
+build = "python -m build"
+check-build = { cmd = "python -m twine check dist/*", depends-on = ["build"] }

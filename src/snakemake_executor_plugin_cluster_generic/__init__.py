@@ -229,8 +229,7 @@ class Executor(RemoteExecutor):
                             self.status_cmd_kills.clear()
                     else:
                         raise WorkflowError(
-                            "Failed to obtain job status. "
-                            "See above for error message."
+                            "Failed to obtain job status. See above for error message."
                         )
 
                 ret = ret.strip().split("\n")

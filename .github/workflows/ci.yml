@@ -7,86 +7,52 @@ on:
   pull_request:
 
 jobs:
-  formatting:
+  format:
     runs-on: ubuntu-latest
     steps:
       - name: Check out the code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
-      
-      - name: Install poetry
-        run: pip install poetry
-
-      - name: Determine dependencies
-        run: poetry lock
-
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
-          cache: poetry
-
-      - name: Install Dependencies using Poetry
-        run: poetry install
+      - name: Setup pixi
+        uses: prefix-dev/setup-pixi@v0
 
       - name: Check formatting
-        run: poetry run black --check .
+        run: pixi run format --check
 
-  linting:
+  lint:
     runs-on: ubuntu-latest
     steps:
       - name: Check out the code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v6
 
-      - uses: actions/setup-python@v4
-        with:
-          python-version: "3.11"
-
-      - name: Install poetry
-        run: pip install poetry
-
-      - name: Determine dependencies
-        run: poetry lock
-
-      - uses: actions/setup-python@v4
-        with:
-          python-version: "3.11"
-          cache: poetry
-
-      - name: Install Dependencies using Poetry
-        run: poetry install
+      - name: Setup pixi
+        uses: prefix-dev/setup-pixi@v0
 
       - name: Check code
-        run: poetry run flake8
+        run: pixi run lint
 
-  testing:
+  typecheck:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Check out the code
+        uses: actions/checkout@v6
 
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
+      - name: Setup pixi
+        uses: prefix-dev/setup-pixi@v0
 
-      - name: Install poetry
-        run: pip install poetry
+      - name: Check code
+        run: pixi run typecheck
 
-      - name: Determine dependencies
-        run: poetry lock
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
 
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
-          cache: poetry
-
-      - name: Install dependencies
-        run: |
-          poetry install
+      - name: Setup pixi
+        uses: prefix-dev/setup-pixi@v0
 
       - name: Run pytest
-        run: poetry run coverage run -m pytest tests/tests.py
+        run: pixi run test -v
 
       - name: Run Coverage
-        run: poetry run coverage report -m
+        run: pixi run coverage-report

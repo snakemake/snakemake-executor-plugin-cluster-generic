@@ -15,7 +15,7 @@ snakemake-interface-executor-plugins = "^9.0.0"
 snakemake-interface-common = "^1.13.0"
 
 [tool.poetry.group.dev.dependencies]
-snakemake = "^8.20.1"
+snakemake = ">=8.20.1,<10.0.0"
 black = "^23.7.0"
 flake8 = ">=6.1,<8.0"
 coverage = "^7.3.0"
